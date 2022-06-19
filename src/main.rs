@@ -1,75 +1,67 @@
-mod cmd;
-use cmd::{channels::*, invite::*};
-use serde::{Deserialize, Serialize};
-use serde_json::Result;
-use serenity::async_trait;
-use serenity::framework::standard::{
-    help_commands,
-    macros::{group, help},
-    Args, CommandGroup, CommandResult, HelpOptions,
-};
-use serenity::framework::StandardFramework;
-use serenity::model::{channel::Message, gateway::Ready, id::UserId};
-use serenity::prelude::{Client, Context, EventHandler};
-use std::{collections::HashSet, fs::File, io::BufReader, usize};
+#[macro_use]
+extern crate log;
+use poise::serenity_prelude as serenity;
+use std::env;
 
-struct Handler;
-#[async_trait]
-impl EventHandler for Handler {
-    async fn ready(&self, _: Context, ready: Ready) {
-        println!("{} is connected!", ready.user.name);
-    }
+#[derive(thiserror::Error, Debug)]
+enum AppError {
+    #[error("{0}")]
+    Serenity(#[from] poise::serenity::Error),
 }
 
-#[help]
-#[individual_command_tip = "help"]
-#[strikethrough_commands_tip_in_guild = ""]
-async fn my_help(
-    ctx: &Context,
-    msg: &Message,
-    args: Args,
-    help_options: &'static HelpOptions,
-    groups: &[&'static CommandGroup],
-    owners: HashSet<UserId>,
-) -> CommandResult {
-    let _ = help_commands::with_embeds(ctx, msg, args, help_options, groups, owners).await;
+type Context<'a> = poise::Context<'a, (), AppError>;
+
+#[poise::command(prefix_command, hide_in_help)]
+async fn register(ctx: Context<'_>) -> Result<(), AppError> {
+    poise::builtins::register_application_commands(ctx, false).await?;
     Ok(())
 }
 
-#[group]
-#[description("invite bot")]
-#[summary("")]
-#[commands(invite, all_channels)]
-struct General;
-
-#[derive(Serialize, Deserialize)]
-struct Token {
-    token: String,
+#[poise::command(prefix_command, slash_command)]
+async fn invite(
+    ctx: Context<'_>,
+    #[description = "who ?"] user: serenity::User,
+    #[description = "where ?"] channel: serenity::Channel,
+) -> Result<(), AppError> {
+    let guild_id = ctx.guild_id().unwrap();
+    let channel_url = format!("https://discord.com/channels/{}/{}", guild_id, channel.id());
+    let msg = format!(
+        "\n<@{}>\n{}さんからボイスチャンネルに招待されました。\n{}",
+        user.id,
+        ctx.author().name,
+        channel_url
+    );
+    poise::say_reply(ctx, msg).await?;
+    Ok(())
 }
 
-fn get_token(file_name: &str) -> Result<String> {
-    let file = File::open(file_name).unwrap();
-    let reader = BufReader::new(file);
-    let t: Token = serde_json::from_reader(reader).unwrap();
-    Ok(t.token)
+async fn on_error(error: poise::FrameworkError<'_, (), AppError>) {
+    error!("{:?}", error);
 }
 
 #[tokio::main]
 async fn main() {
-    let token = get_token("config.json").expect("Err: token not found");
-    let framework = StandardFramework::new()
-        // TODO: prefix
-        .configure(|c| c.prefix("\\"))
-        .help(&MY_HELP)
-        .group(&GENERAL_GROUP);
+    dotenv::dotenv().ok();
+    env_logger::init();
+    let token = env::var("DISCORD_TOKEN").expect("DISCORD_TOKEN not set");
 
-    let mut client = Client::builder(&token)
-        .event_handler(Handler)
-        .framework(framework)
-        .await
-        .expect("Err: creating client");
+    let options = poise::FrameworkOptions {
+        commands: vec![register(), invite()],
+        prefix_options: poise::PrefixFrameworkOptions {
+            prefix: Some("\\".to_string()),
+            ..Default::default()
+        },
+        on_error: |err| Box::pin(on_error(err)),
+        ..Default::default()
+    };
 
-    if let Err(why) = client.start().await {
-        println!("Client Err: {:?}", why);
-    }
+    let framework = poise::Framework::build()
+        .token(token)
+        .intents(
+            serenity::GatewayIntents::non_privileged() | serenity::GatewayIntents::MESSAGE_CONTENT,
+        )
+        .options(options)
+        .user_data_setup(|_, _, _| Box::pin(async { Ok(()) }));
+
+    framework.run().await.unwrap();
 }
