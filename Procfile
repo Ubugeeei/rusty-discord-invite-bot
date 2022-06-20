@@ -1,1 +1,1 @@
-  web: ./target/release/rusty-discord-invite-bot
+  worker: ./target/release/rusty-discord-invite-bot
