@@ -1,0 +1,1 @@
+  web: ./target/release/rusty-discord-invite-bot
