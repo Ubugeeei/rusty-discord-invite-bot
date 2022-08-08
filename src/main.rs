@@ -19,6 +19,12 @@ async fn register(ctx: Context<'_>) -> Result<(), AppError> {
 }
 
 #[poise::command(prefix_command, slash_command)]
+async fn golis(ctx: Context<'_>) -> Result<(), AppError> {
+    poise::say_reply(ctx, "https://folio.ink/cdn-cgi/imagedelivery/DXFMeCSD5rcrv8HD7trYsA/220697dc-7cbd-4b86-e27b-b5ed90da9100/public").await?;
+    Ok(())
+}
+
+#[poise::command(prefix_command, slash_command)]
 async fn invite(
     ctx: Context<'_>,
     #[description = "who ?"] user1: serenity::User,
@@ -119,7 +125,7 @@ async fn main() {
     let token = env::var("DISCORD_TOKEN").expect("DISCORD_TOKEN not set");
 
     let options = poise::FrameworkOptions {
-        commands: vec![register(), invite()],
+        commands: vec![register(), invite(), golis()],
         prefix_options: poise::PrefixFrameworkOptions {
             prefix: Some("\\".to_string()),
             ..Default::default()
