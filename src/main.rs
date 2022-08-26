@@ -20,7 +20,36 @@ async fn register(ctx: Context<'_>) -> Result<(), AppError> {
 
 #[poise::command(prefix_command, slash_command)]
 async fn golis(ctx: Context<'_>) -> Result<(), AppError> {
-    poise::say_reply(ctx, "https://folio.ink/cdn-cgi/imagedelivery/DXFMeCSD5rcrv8HD7trYsA/220697dc-7cbd-4b86-e27b-b5ed90da9100/public").await?;
+    let golis_str = r#"
+```
+MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMMMMMMMMM8XSzzzzuuSzMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMNMMMMM#MSzzzuzuzuzzzzzzMHMMMMSM#MMMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMM#XMXXM#H8zuzuzzuzuzzuzuzuzXHM#zuMUdMMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMNmuzXMMUzuzzuzuzuzzuuuzuzuzuMMmzQMMMMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMmXMUzzuzzzun.MKzQ.MkzuzzzuUQMMMMMMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMBzXXXzuzzudMMUudMMuzzuXXmXXMMMMMMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMNmdNMNNmmkXXXXMWXXXVUHMMMBqMMMMMMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMMMMMBd93::::;::;::;::;::;CjC:?TTMMMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMMMMMB3;:::<::;:;:;::;::;:;;::;><<<::::?TMMMMMMMMMMMMMMMMM
+MMMMMMBYT7TTMM8>::j+Jv7TIuJ<:;:;:;:;::;jJ"=`   _74J::;?BJ:;::;<dMMMMMM
+MMMM5:::::<+5::jJ"         .TJ::;::;:j"            7x:::?h+J+:;:?MMMMM
+MMM>:;jNNaK;::j^             .h;::;:J!              ,[::;:dMMx:;:JMMMM
+MMF:;<MMME::;j\ ..J,          .P;::j\ .MMN,          w;::;:?@;::;jMMMM
+MMN<::?WE;:;:d .MMMMb          S;:;J .MMM"M   `   `  (;:;:;:d+;:jMMMMM
+MMMNJ<<K:;:::J.,MMN.F `   `  ` P:::?[ TMM#3          P:;::;:<NjMMMMMMM
+MMMMMMM3::;;:<b  ?"!          ->:;::?,          `  .J<::;::;:JMMMMMMMM
+MMMMMM#:;::;:;<S,       `  `.Y;jgNNNNJ6..   `    .J3:;:;:;:;:<MMMMMMMM
+MMMMMMD;:;::;:;:<TG.......ZY;<jMMMMMMMb;<7YYTYYY>::;::;::;::;:dMMMMMMM
+MMMMMMC:;:;::;:;:;::;::::;:+J^_TWMMW9^.?4+;;:;:;:;::;::;::;:;:JMMMMMMM
+MMMMMM<;::;:;:::;::;::;:;::J_.......~...~z<:::;::;:;:;:;:;:;:;jMMMMMMM
+MMMMMM;::;::;:;::;::;:;::;:?h-((J7#"3J.-(Y:;:;::;::;::;::;::;:<MMMMMMM
+MMMMMM<:;::;:;:;:;:;::;:;::::j]   F  .P:::;:;:;::;::;::;::;::;:MMMMMMM
+MMMMMM>::;::;::;::;::;::;:;:;<b   F   b:;::;::;:;:;:;:;:;:;:;:;MMMMMMM
+MMMMMMI;:;:;::;:;::;::;::;:;::?5J5?S-T>;:;::;::;::;::;::;::;:::MMMMMMM
+MMMMMMP:;::;:;::;:;:;:;:;::;:;:;:;:;:;::;:;:;:;::;:;::;::;::;;:MMMMMMM
+```"#;
+    poise::say_reply(ctx, golis_str).await?;
     Ok(())
 }
 
